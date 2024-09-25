@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPT-4 Coding Editor</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+        #chat {
+            width: 30%;
+            border-right: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        #chatMessages {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        #chatInput {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ccc;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .user {
+            align-self: flex-end;
+            background-color: #e1f5fe;
+            color: #0277bd;
+        }
+        .assistant {
+            align-self: flex-start;
+            background-color: #fff8e1;
+            color: #f9a825;
+        }
+        #editor {
+            width: 70%;
+            padding: 10px;
+        }
+        #codeEditor {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chat">
+        <div id="chatMessages"></div>
+        <input type="text" id="chatInput" placeholder="Type a message...">
+    </div>
+
+    <div id="editor">
+        <textarea id="codeEditor" placeholder="Start coding here..."></textarea>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            const chatMessages = document.getElementById('chatMessages');
+            const codeEditor = document.getElementById('codeEditor');
+
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const message = chatInput.value;
+                    if (message.trim() !== '') {
+                        addMessage('user', message);
+                        processMessage(message);
+                        chatInput.value = '';
+                    }
+                }
+            });
+
+            function addMessage(sender, text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message ' + sender;
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function processMessage(message) {
+                // Simulate assistant's response
+                if (message.toLowerCase().startsWith('find and replace')) {
+                    // Parse the message to extract find and replace terms
+                    const regex = /find and replace "(.*)" with "(.*)"/i;
+                    const matches = message.match(regex);
+                    if (matches && matches.length === 3) {
+                        const findText = matches[1];
+                        const replaceText = matches[2];
+                        findAndReplace(findText, replaceText);
+                        addMessage('assistant', `Replaced "${findText}" with "${replaceText}".`);
+                    } else {
+                        addMessage('assistant', 'Please provide the find and replace terms in quotes, e.g., find and replace "oldText" with "newText".');
+                    }
+                } else {
+                    addMessage('assistant', 'I can help you find and replace text. Please use the format: find and replace "oldText" with "newText".');
+                }
+            }
+
+            function findAndReplace(findText, replaceText) {
+                const content = codeEditor.value;
+                const newContent = content.split(findText).join(replaceText);
+                codeEditor.value = newContent;
+            }
+        });
+    </script>
+
+</body>
+</html>
